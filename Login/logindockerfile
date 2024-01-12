@@ -1,17 +1,16 @@
-
-#latest version of python
+# Use the latest version of Python
 FROM python:3.11.7
 
-# Set the working directory to /app
+# Set the working directory to /Login
 WORKDIR /Login
 
-# Copy the current directory contents into the container at /app
+# Copy the current directory contents into the container at /Login
 COPY . /Login
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-#latest pip version
+# Upgrade pip to the latest version
 RUN pip install --upgrade pip
 
 # Make port 5000 available to the world outside this container
@@ -23,4 +22,5 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run the Flask app
 CMD ["flask", "run"]
+
 
