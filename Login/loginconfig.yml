@@ -1,7 +1,7 @@
 # loginconfig.yaml
 
 user: Hika
-password: Hika 32146
+password: Admin
 host: 3.80.116.96
-database: login-details
+database: Login_db
 
