@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_from_directory
 import mysql.connector
 import yaml
 
@@ -38,12 +38,8 @@ def render_frontend():
 
 @app.route('/videos/<path:title>')
 def serve_video(title):
-    # Construct the full path to the video file
-    video_path = '/home/ec2-user/my-flix/mp4/' + title
-
-    # Serve the video file
-    print("Absolute path:", video_path)
-    return send_file(video_path, as_attachment=True)
+    # Serve videos from the specified directory
+    return send_from_directory('/home/ec2-user/my-flix/mp4', title)
 
 if __name__ == '__main__':
     app.run(debug=True)
