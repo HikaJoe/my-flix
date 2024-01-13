@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyFlix</title>
+  <link rel="stylesheet" href="css/Styles.css">
+  <link href="//vjs.zencdn.net/7.8.4/video-js.min.css" rel="stylesheet">
+  <script src="//vjs.zencdn.net/7.8.4/video.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>MyFlix</h1>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+  
+      header {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+      }
+  
+      nav {
+        background-color: #444;
+        padding: 10px;
+        text-align: center;
+      }
+  
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        cursor: pointer;
+      }
+  
+      main {
+        padding: 20px;
+      }
+  
+      .movie-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+  
+      .movie {
+        width: 200px;
+        margin: 10px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+  
+      .movie img {
+        max-width: 100%;
+        height: auto;
+      }
+      </style>
+  </header>
+  <nav>
+    <a href="#" onclick="showContent('Home')">Home</a>
+    <a href="#" onclick="showContent('Movies')">Movies</a>
+    <a href="#" onclick="showContent('TV Shows')">TV Shows</a>
+    <a href="#" onclick="showContent('Contact')">Contact</a>
+  </nav>
+<!--
+  <div id="mv-container">
+    <video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
+    controls preload="none" poster="pics/bbb.png"
+    data-setup="{§}">
+    <source src="bbb.mp4" type='video/mp4'>
+    </video>
+  </div>
+-->
+
+</body>
+</html>
