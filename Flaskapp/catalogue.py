@@ -1,86 +1,49 @@
-from datetime import *
-import time
-import sys
+from flask import Flask, render_template, send_file
+import mysql.connector
+import yaml
 
-import json
-import requests
-# First we set our credentials
-
-from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
 app = Flask(__name__)
-app.debug = True
 
-@app.route('/Video/<video>')
-def video_page(video):
-    print (video)
-    url = 'http://52.20.139.81/myflix/videos?filter={"video.uuid":"'+video+'"}'
-    headers = {}
-    payload = json.dumps({ })
-    print (request.endpoint)
-    response = requests.get(url)
-    print (url)
-    if response.status_code != 200:
-      print("Unexpected response: {0}. Status: {1}. Message: {2}".format(response.reason, response.status, jResp['Exception']['Message']))
-      return "Unexpected response: {0}. Status: {1}. Message: {2}".format(response.reason, response.status, jResp['Exception']['Message'])
-    jResp = response.json()
-    print (type(jResp))
-    print (jResp)
-    for index in jResp:
-        for key in index:
-           if (key !="_id"):
-              print (index[key])
-              for key2 in index[key]:
-                  print (key2,index[key][key2])
-                  if (key2=="Name"):
-                      video=index[key][key2]
-                  if (key2=="file"):
-                      videofile=index[key][key2]
-                  if (key2=="pic"):
-                      pic=index[key][key2]
-    return render_template('index2.html', name=video,file=videofile,pic=pic)
+# Load database configuration from the YAML file
+with open('catalogueconfig.yml', 'r') as yaml_file:
+    config = yaml.safe_load(yaml_file)
+
+# Establish the database connection
+conn = mysql.connector.connect(**config)
 
 @app.route('/')
-def cat_page():
-    url = "http://52.20.139.81/myflix/videos"
-    headers = {}
-    payload = json.dumps({ })
+def render_frontend():
+    try:
+        # Create a cursor to interact with the database
+        cursor = conn.cursor(dictionary=True)
 
-    response = requests.get(url)
-    #print (response)
-    # exit if status code is not ok
-    print (response)
-    print (response.status_code)
-    if response.status_code != 200:
-      print("Unexpected response: {0}. Status: {1}. Message: {2}".format(response.reason, response.status, jResp['Exception']['Message']))
-      return "Unexpected response: {0}. Status: {1}. Message: {2}".format(response.reason, response.status, jResp['Exception']['Message'])
-    jResp = response.json()
-    print (type(jResp))
-    html="<h2> Your Videos</h2>"
-    for index in jResp:
-       #print (json.dumps(index))
-       print ("----------------")
-       for key in index:
+        # Fetch video data from the 'videos' table
+        cursor.execute("SELECT * FROM videos")
+        videos = cursor.fetchall()
 
-           if (key !="_id"):
-              print (index[key])
-              for key2 in index[key]:
-                  print (key2,index[key][key2])
-                  if (key2=="Name"):
-                      name=index[key][key2]
-                  if (key2=="thumb"):
-                      thumb=index[key][key2]
-                  if (key2=="uuid"):
-                      uuid=index[key][key2]  
-              html=html+'<h3>'+name+'</h3>'
-              ServerIP=request.host.split(':')[0]
-              html=html+'<a href="http://'+ServerIP+'/Video/'+uuid+'">'
-              html=html+'<img src="http://52.20.139.81/pics/'+thumb+'">'
-              html=html+"</a>"        
-              print("=======================")
+        return render_template('index2.html', videos=videos)
 
-    return html
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return "Error fetching data from the database."
 
+    finally:
+        # Close the cursor and connection in the finally block to ensure they're always closed
+        if 'cursor' in locals():
+            try:
+                if cursor.is_open:
+                    cursor.close()
+            except AttributeError:
+                pass
+
+@app.route('/videos/<path:title>')
+def serve_video(title):
+    # Construct the full path to the video file
+    video_path = '/home/ec2-user/my-flix/mp4/' + title
+
+    # Serve the video file
+    print("Absolute path:", video_path)
+    return send_file(video_path, as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port="80")
+    app.run(debug=True)
